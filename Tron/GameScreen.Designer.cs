@@ -33,6 +33,7 @@
             this.player2Label = new System.Windows.Forms.Label();
             this.gameTimer = new System.Windows.Forms.Timer(this.components);
             this.waitTimer = new System.Windows.Forms.Timer(this.components);
+            this.displayLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // player1Label
@@ -70,11 +71,25 @@
             this.waitTimer.Interval = 20;
             this.waitTimer.Tick += new System.EventHandler(this.waitTimer_Tick);
             // 
+            // displayLabel
+            // 
+            this.displayLabel.AutoSize = true;
+            this.displayLabel.BackColor = System.Drawing.Color.Transparent;
+            this.displayLabel.Enabled = false;
+            this.displayLabel.Font = new System.Drawing.Font("NSimSun", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.displayLabel.ForeColor = System.Drawing.Color.White;
+            this.displayLabel.Location = new System.Drawing.Point(110, 271);
+            this.displayLabel.Name = "displayLabel";
+            this.displayLabel.Size = new System.Drawing.Size(442, 21);
+            this.displayLabel.TabIndex = 2;
+            this.displayLabel.Text = "Press Space to Continue, esc to exit";
+            // 
             // GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
+            this.Controls.Add(this.displayLabel);
             this.Controls.Add(this.player2Label);
             this.Controls.Add(this.player1Label);
             this.DoubleBuffered = true;
@@ -95,5 +110,6 @@
         private System.Windows.Forms.Label player2Label;
         private System.Windows.Forms.Timer gameTimer;
         private System.Windows.Forms.Timer waitTimer;
+        private System.Windows.Forms.Label displayLabel;
     }
 }

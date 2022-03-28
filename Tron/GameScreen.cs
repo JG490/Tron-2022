@@ -43,14 +43,10 @@ namespace Tron
         }
         public void InitializeGame()
         {
-            p1.x = 20;
-            p1.y = 0;
-            p2.x = 680;
-            p2.y = 700;
-            p1.direction = "down";
-            p2.direction = "up";
-            Form1.p1Score = Convert.ToString(0);
-            Form1.p2Score = Convert.ToString(0);            
+            resetPosition();
+            Form1.p1Score = 0;
+            Form1.p2Score = 0;
+            displayLabel.Text = "Press Space to Continue, esc to exit";
         }
         private void GameScreen_Load(object sender, EventArgs e)
         {
@@ -135,6 +131,7 @@ namespace Tron
 
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            displayLabel.Visible = false;
             //Changes direction Tron should be moving in.
             NewTrail(p1.x, p1.y, p2.x, p2.y); 
             //for player 1
@@ -209,19 +206,31 @@ namespace Tron
                 p2.Move("right");
             }
             //collisions with border
-           
+
             //collisions with trail
             if (p1Trail.Count > 2)
             {
-                for (int i = 0; i < p2Trail.Count() - 2; i++)
+                try
                 {
-                    if (p2Trail[i].Collision(p2))
+                    for (int i = 0; i < p2Trail.Count() - 2; i++)
                     {
-                        Pointgain(1);
-                        gameTimer.Enabled = false;
+                        if (p2Trail[i].Collision(p2))
+                        {
+                            Pointgain(1);
+                            waitTimer.Enabled = true;
+                            gameTimer.Enabled = false;
+                        }
                     }
                 }
-                for (int i = 0; i < p1Trail.Count()-2; i++)
+                catch
+                {
+                    Pointgain(1);
+                    waitTimer.Enabled = true;
+                    gameTimer.Enabled = false;
+                }
+            
+            try { 
+                for (int i = 0; i < p1Trail.Count() - 2; i++)
                 {
                     if (p1Trail[i].Collision(p1))
                     {
@@ -230,23 +239,46 @@ namespace Tron
                         gameTimer.Enabled = false;
                     }
                 }
-                foreach (Player a in p1Trail)
+                }
+                catch
                 {
-                    if (a.Collision(p2))
+                    Pointgain(2);
+                    waitTimer.Enabled = true;
+                    gameTimer.Enabled = false;
+                }
+                try {
+                    foreach (Player a in p1Trail)
+                    {
+                        if (a.Collision(p2))
+                        {
+                            Pointgain(1);
+                            waitTimer.Enabled = true;
+                            gameTimer.Enabled = false;
+                        }
+                    }
+                }
+                catch
+                {
+                    Pointgain(1);
+                    waitTimer.Enabled = true;
+                    gameTimer.Enabled = false;
+                } 
+                try { 
+                foreach (Player b in p2Trail)
+                {
+                    if (b.Collision(p1))
                     {
                         Pointgain(2);
                         waitTimer.Enabled = true;
                         gameTimer.Enabled = false;
                     }
                 }
-                foreach (Player b in p2Trail)
+                }
+                catch
                 {
-                    if (b.Collision(p1))
-                    {
-                        Pointgain(1);
-                        waitTimer.Enabled = true;
-                        gameTimer.Enabled = false;
-                    }
+                    Pointgain(2);
+                    waitTimer.Enabled = true;
+                    gameTimer.Enabled = false;
                 }
                 if (p1.Collision(p2))
                 {
@@ -257,12 +289,22 @@ namespace Tron
             }
             if (spaceDown == true)
             {
-                InitializeGame();
+                resetPosition();
+                p1Trail.Clear();
+                p2Trail.Clear();
             }
             if (escDown == true)
             {
                 gameTimer.Enabled = false;
                 Form1.ChangeScreen(this, new MenuScreen());
+            }
+            if (Form1.p1Score == 3)
+            {
+                displayLabel.Text = "Blue Wins";
+            }
+            if (Form1.p2Score == 3)
+            {
+                displayLabel.Text = "Orange Wins";
             }
             Refresh();
         }
@@ -277,25 +319,23 @@ namespace Tron
         {
             if (player == 0)
             {
-                Form1.p1Score = "Draw";
                 Thread.Sleep(500);
+                resetPosition();
                 gameTimer.Enabled = true;
-                Form1.p2Score = "Esc to return to menu";
             }
             if (player == 1)
             { 
-                Form1.p1Score = "winner";
+                Form1.p1Score++;
                 Thread.Sleep(500);
+                resetPosition();
                 gameTimer.Enabled = true;
-                Form1.p2Score = "hit escape to return to menu";
             }
             if (player == 2)
             {
-                Form1.p2Score = "winner";
+                Form1.p2Score++;
                 Thread.Sleep(500);
+                resetPosition();
                 gameTimer.Enabled = true;
-                Form1.p1Score = "hit escape to return to menu";
-
             }
         }
         private void GameScreen_Paint_1(object sender, PaintEventArgs e)
@@ -312,14 +352,12 @@ namespace Tron
             {
                 e.Graphics.FillRectangle(Brushes.DarkGoldenrod, b.x, b.y, p2.width, p2.height);
             }
-            Rectangle topBorder = new Rectangle(0, 0, 700, -2);
-            Rectangle bottomBorder = new Rectangle(0, 700, 700, 2);
-            Rectangle rightBorder = new Rectangle(0, 0, -2, 700);
-            Rectangle leftBorder = new Rectangle(700, 0, 2, 700);
         }
 
         private void waitTimer_Tick(object sender, EventArgs e)
         {
+            displayLabel.Visible = true;
+            displayLabel.Enabled = true;
             if (escDown == true)
             {
                 waitTimer.Enabled = false;
@@ -327,10 +365,24 @@ namespace Tron
             }
             if (spaceDown == true)
             {
-                InitializeGame();
-                waitTimer.Enabled = false;
+                p1Trail.Clear();
+                p2Trail.Clear();
+                resetPosition();
                 gameTimer.Enabled = true;
+                waitTimer.Enabled = false;
+
+
             }
+        }
+        public void resetPosition()
+        {
+            p1.x = 20;
+            p1.y = 0;
+            p2.x = 680;
+            p2.y = 700;
+            p1.direction = "down";
+            p2.direction = "up";
+
         }
     }
 }

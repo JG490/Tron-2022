@@ -1,7 +1,7 @@
 ﻿//Joey Gerber
 //ICS4U
 //Mr. T
-//Tron, a two player game that requires a player to avoid colliding with the walls or the other player.
+//Tron, a two player game that requires a player to avoid colliding with the walls or the other player. Requires 5 points to win.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +16,7 @@ namespace Tron
 {
     public partial class Form1 : Form
     {
-        public static string p1Score, p2Score;
+        public static int p1Score, p2Score;
         public Form1()
         {
             InitializeComponent();
